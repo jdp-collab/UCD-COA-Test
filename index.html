@@ -1,3 +1,30 @@
+// SIMPLE AUTHENTICATION GATEWAY
+(function() {
+    const ACCESS_PASSWORD = "Belfield1854"; // Change this to whatever you want
+    let authenticated = false;
+    
+    // Check if they already logged in during this browser session
+    if (sessionStorage.getItem("calculator_auth") === "true") {
+        authenticated = true;
+    }
+
+    while (!authenticated) {
+        let entry = prompt("Please enter the internal access password to view this UCD Financial Prototype:");
+        
+        // If they hit cancel or leave it blank
+        if (entry === null) {
+            document.body.innerHTML = "<div style='font-family:sans-serif; padding:50px; text-align:center;'><h2>Access Denied</h2><p>A password is required to test this utility.</p></div>";
+            return;
+        }
+        
+        if (entry === ACCESS_PASSWORD) {
+            sessionStorage.setItem("calculator_auth", "true");
+            authenticated = true;
+        } else {
+            alert("Incorrect password. Please try again.");
+        }
+    }
+})();
 <!DOCTYPE html>
 <html lang="en">
 <head>
