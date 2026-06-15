@@ -16,19 +16,18 @@ const UCD_FINANCIAL_DATABASE = {
 
     tuitionRatesEUR: {
         undergraduate: {
-            "Arts & Humanities": 21600,
-            "Business & Law": 27200,
-            "Science & Engineering": 27800,
-            "Health & Agricultural Sciences": 28500,
-            "Medicine & Veterinary Medicine": 56500,
-            "BSc Nursing (Aid Prohibited)": 0
+            "Classroom - Arts & Humanities, Social Sciences & Law": 22600,
+            "Business": 23170,
+            "Labratory - Agriculture, Science, & Engineering": 29500,
+            "Veterinary Medicine": 38000,
+            "Medicine": 63890
         },
         graduate: {
-            "Arts & Humanities (Taught MA)": 22400,
-            "Business (Smurfit School MSc)": 26900,
-            "STEM / Science & Engineering (MSc)": 28900,
-            "Medicine & Health Sciences": 29400,
-            "MSc Nursing (Aid Prohibited)": 0
+            "Classroom - Arts & Humanities, Social Sciences & Law": 22600,
+            "Business (Smurfit School)": 23870,
+            "Labratory - Agriculture, Science & Engineering": 29500,
+            "Veterinary Medicine (Graduate Entry)": 44880,
+            "Medicine (Graduate Entry)": 66360
         }
     },
 
@@ -38,16 +37,20 @@ const UCD_FINANCIAL_DATABASE = {
             graduate: 12
         },
         breakdown: {
-            "Rent & On-Campus/Shared Housing": 1100,
-            "Food & Groceries": 350,
-            "Local Public Transport (Student Leap Card)": 80,
-            "Utilities, Heating & Broadband": 100,
-            "Miscellaneous Personal & Social Expenses": 170
+            "Rent & On-Campus/Shared Housing": 1200,
+            "Food & Groceries": 490,
+            "Local Public Transport (Student Leap Card)": 75,
+            "Utilities, Heating & Broadband": 135,
+            "Books & Copying": 120,
+            "Clothing & Hygiene": 150,
+            "Internet & Mobile": 45,
+            "Personal & Social": 120,
+            "Miscellaneous": 110
         },
         annualFixedExpenses: {
-            "Mandatory Non-EU Student Health Insurance": 450,
-            "Textbooks, Software & Academic Supplies": 800,
-            "Transatlantic Flights / Holiday Travel Home": 1200
+            "Mandatory Non-EU Student Health Insurance": 690,
+            "Irish Residence Permit": 300,
+            "Roundtrip Flights": 1200
         }
     },
 
