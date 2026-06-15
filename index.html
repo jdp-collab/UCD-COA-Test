@@ -112,21 +112,40 @@
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-bold text-gray-900">[PROTOTYPE] Itemized Expense Breakdown</h3>
-                        <span class="text-xs text-gray-400 font-semibold" id="livingTimelineLabel"></span>
+                        <h3 class="font-bold text-gray-900">[PROTOTYPE] Delineated Expense Breakdown</h3>
+                        <span class="text-xs text-gray-500 font-bold bg-gray-200 px-2 py-0.5 rounded" id="livingTimelineLabel"></span>
                     </div>
-                    <div class="p-6 divide-y divide-gray-100" id="itemizedCostContainer">
-                        <div class="flex justify-between py-3 items-center">
-                            <div>
-                                <span class="font-bold text-gray-900 block">Non-EU Tuition Fees</span>
-                                <span class="text-xs text-gray-400">Academic instructional base rate</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold text-gray-900 block" id="itemTuitionUSD">$0</span>
-                                <span class="text-xs font-semibold text-ucdSecondary block" id="itemTuitionEUR">€0</span>
+                    
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">Core Academic Tuition</h4>
+                            <div class="flex justify-between py-2 items-center">
+                                <div>
+                                    <span class="font-medium text-gray-900 text-sm block">Non-EU Tuition Rate</span>
+                                    <span class="text-xs text-gray-400">Based on selected degree track</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-gray-900 block text-sm" id="itemTuitionUSD">$0</span>
+                                    <span class="text-xs font-semibold text-ucdSecondary block" id="itemTuitionEUR">€0</span>
+                                </div>
                             </div>
                         </div>
+
+                        <div>
+                            <div class="flex justify-between items-baseline mb-2 pb-1 border-b border-gray-100">
+                                <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider">Estimated Monthly Costs</h4>
+                                <span class="text-[10px] text-gray-400 font-medium" id="monthlyMultiplierNote"></span>
+                            </div>
+                            <div class="divide-y divide-gray-50" id="monthlyCostsContainer">
+                                </div>
                         </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">One-Time / Annual Fixed Expenses</h4>
+                            <div class="divide-y divide-gray-50" id="annualFixedContainer">
+                                </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -182,7 +201,7 @@
     <script>
         // GATEWAY SYSTEM: Halts parsing sequence immediately if authorization criteria fails
         (function() {
-            const ACCESS_PASSWORD = "Belfield1854"; // Updated prototype credential passcode requirement
+            const ACCESS_PASSWORD = "Belfield1854"; 
             let authenticated = false;
             
             if (sessionStorage.getItem("calculator_auth") === "true") {
@@ -272,43 +291,54 @@
                 dashboard.classList.remove("hidden");
             }
 
-            // --- 1. CORE TUITION MATH (Reference to Student Centre Levy completely purged) ---
+            // --- 1. CORE TUITION DATA EXTRESION ---
             const tuitionEUR = UCD_FINANCIAL_DATABASE.tuitionRatesEUR[level][field];
             const colMonths = UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.durationMonths[level];
 
-            // Re-render core tuition row fields immediately
             document.getElementById("itemTuitionUSD").innerText = formatUSD(tuitionEUR * fxRate);
             document.getElementById("itemTuitionEUR").innerText = formatEUR(tuitionEUR);
 
-            // --- 2. DYNAMIC COST OF LIVING ANALYSIS & VIEW GENERATION ---
-            // Clear prior programmatic rows except the base tuition block
-            const costContainer = document.getElementById("itemizedCostContainer");
-            while (costContainer.children.length > 1) {
-                costContainer.removeChild(costContainer.lastChild);
-            }
+            // --- 2. DYNAMICALLY DELINEATE LIVING COSTS INTO SEPARATE CONTAINER REGIONS ---
+            const monthlyContainer = document.getElementById("monthlyCostsContainer");
+            const annualFixedContainer = document.getElementById("annualFixedContainer");
+            
+            // Purge existing elements
+            monthlyContainer.innerHTML = "";
+            annualFixedContainer.innerHTML = "";
 
             let totalLivingEUR = 0;
 
-            // Render Monthly Breakdown Sub-Rows Programmatically
+            // Render Delineated Monthly Component Nodes
             for (const [itemName, monthlyValue] of Object.entries(UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.breakdown)) {
                 const calculatedAnnualItemEUR = monthlyValue * colMonths;
                 totalLivingEUR += calculatedAnnualItemEUR;
                 
-                appendCostRow(costContainer, itemName, `${formatEUR(monthlyValue)} / month over ${colMonths} months`, calculatedAnnualItemEUR, calculatedAnnualItemEUR * fxRate);
+                appendDelineatedRow(
+                    monthlyContainer, 
+                    itemName, 
+                    `${formatEUR(monthlyValue)}/mo baseline rate`, 
+                    calculatedAnnualItemEUR, 
+                    calculatedAnnualItemEUR * fxRate
+                );
             }
 
-            // Render Annual Fixed Sub-Rows Programmatically
+            // Render Delineated Annual Fixed / One-Time Nodes
             for (const [itemName, annualValue] of Object.entries(UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.annualFixedExpenses)) {
                 totalLivingEUR += annualValue;
-                appendCostRow(costContainer, itemName, "Fixed annual rate value assignment", annualValue, annualValue * fxRate);
+                
+                appendDelineatedRow(
+                    annualFixedContainer, 
+                    itemName, 
+                    "One-time flat academic year fee", 
+                    annualValue, 
+                    annualValue * fxRate
+                );
             }
 
             const totalCOA_EUR = tuitionEUR + totalLivingEUR;
-
-            // --- 3. CURRENCY CONVERSION STAGE (EUR TO USD) ---
             const totalCOA_USD = totalCOA_EUR * fxRate;
 
-            // --- 4. EXECUTE LOAN LIMIT MATCHING STRATEGY (USD STANDARD CAPS) ---
+            // --- 3. EXECUTE LOAN LIMIT MATCHING STRATEGY (USD STANDARD CAPS) ---
             let maxSub_USD = 0;
             let maxUnsub_USD = 0;
 
@@ -329,7 +359,6 @@
                 }
             }
 
-            // Cap allocations at limits or remaining balances
             let allowedSub_USD = Math.min(maxSub_USD, totalCOA_USD);
             let remainingCOA_USD = totalCOA_USD - allowedSub_USD;
 
@@ -339,13 +368,14 @@
             let allowedPlus_USD = Math.max(0, remainingCOA_USD);
             let totalAidPackage_USD = allowedSub_USD + allowedUnsub_USD + allowedPlus_USD;
 
-            // --- 5. RENDER AGGREGATE SUMMARY FIELDS ---
+            // --- 4. RENDER AGGREGATE SUMMARY FIELDS ---
             document.getElementById("totalCostUSD").innerText = formatUSD(totalCOA_USD);
             document.getElementById("totalCostEUR").innerText = formatEUR(totalCOA_EUR);
             document.getElementById("totalAidUSD").innerText = formatUSD(totalAidPackage_USD);
             document.getElementById("totalAidEUR").innerText = formatEUR(totalAidPackage_USD / fxRate);
 
-            document.getElementById("livingTimelineLabel").innerText = `${colMonths}-Month Plan Model`;
+            document.getElementById("livingTimelineLabel").innerText = `${level.toUpperCase()} PROFILE`;
+            document.getElementById("monthlyMultiplierNote").innerText = `Annualized over ${colMonths} months`;
 
             document.getElementById("aidSubsidizedUSD").innerText = formatUSD(allowedSub_USD);
             document.getElementById("aidSubsidizedEUR").innerText = formatEUR(allowedSub_USD / fxRate);
@@ -355,21 +385,21 @@
             document.getElementById("aidPlusEUR").innerText = formatEUR(allowedPlus_USD / fxRate);
         }
 
-        // Programmatic Sub-Row Generation Utility
-        function appendCostRow(parentContainer, title, subtitle, valueEUR, valueUSD) {
+        // Programmatic Delineated Row Injection Helper
+        function appendDelineatedRow(targetParentContainer, title, subtitle, valueEUR, valueUSD) {
             const div = document.createElement("div");
-            div.className = "flex justify-between py-3 items-center border-t border-gray-100";
+            div.className = "flex justify-between py-2.5 items-center";
             div.innerHTML = `
                 <div>
                     <span class="font-medium text-gray-700 block text-sm">${title}</span>
-                    <span class="text-xs text-gray-400 block">${subtitle}</span>
+                    <span class="text-[11px] text-gray-400 block">${subtitle}</span>
                 </div>
                 <div class="text-right">
                     <span class="font-semibold text-gray-900 block text-sm">${formatUSD(valueUSD)}</span>
                     <span class="text-xs font-medium text-ucdSecondary block">${formatEUR(valueEUR)}</span>
                 </div>
             `;
-            parentContainer.appendChild(div);
+            targetParentContainer.appendChild(div);
         }
 
         // Formatting Helpers
