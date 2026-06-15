@@ -1,33 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-// SIMPLE AUTHENTICATION GATEWAY
-(function() {
-    const ACCESS_PASSWORD = "Belfield1854"; // Change this to whatever you want
-    let authenticated = false;
-    
-    // Check if they already logged in during this browser session
-    if (sessionStorage.getItem("calculator_auth") === "true") {
-        authenticated = true;
-    }
-
-    while (!authenticated) {
-        let entry = prompt("Please enter the internal access password to view this UCD Financial Prototype:");
-        
-        // If they hit cancel or leave it blank
-        if (entry === null) {
-            document.body.innerHTML = "<div style='font-family:sans-serif; padding:50px; text-align:center;'><h2>Access Denied</h2><p>A password is required to test this utility.</p></div>";
-            return;
-        }
-        
-        if (entry === ACCESS_PASSWORD) {
-            sessionStorage.setItem("calculator_auth", "true");
-            authenticated = true;
-        } else {
-            alert("Incorrect password. Please try again.");
-        }
-    }
-})();
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCD Cost of Attendance & US Federal Loan Calculator</title>
@@ -53,7 +26,7 @@
                 <h1 class="text-2xl md:text-3xl font-bold tracking-tight">University College Dublin</h1>
                 <p class="text-blue-100 mt-1">North American Student Financial Aid Planner (Non-EU Estimation Tool)</p>
             </div>
-            <div class="bg-[#02132e] px-4 py-2 rounded text-xs text-white-200 border border-slate-800">
+            <div class="bg-[#02132e] px-4 py-2 rounded text-xs text-blue-200 border border-slate-800">
                 School Code: <strong>G10188</strong> | Academic Year: 2026/2027
             </div>
         </div>
@@ -201,9 +174,43 @@
     <script src="calculator-db.js"></script>
 
     <script>
+        // GATEWAY SYSTEM: Halts parsing sequence immediately if authorization criteria fails
+        (function() {
+            const ACCESS_PASSWORD = "Belfield1854"; // Feel free to update this target key anytime
+            let authenticated = false;
+            
+            if (sessionStorage.getItem("calculator_auth") === "true") {
+                authenticated = true;
+            }
+
+            while (!authenticated) {
+                let entry = prompt("Please enter the internal access password to view this UCD Financial Prototype:");
+                
+                if (entry === null) {
+                    // Wipes DOM structure clean if user exits window tracking alert context
+                    document.body.innerHTML = `
+                        <div class="max-w-md mx-auto mt-24 p-6 bg-white border border-gray-200 rounded-xl shadow-sm text-center">
+                            <div class="text-4xl mb-3">🔒</div>
+                            <h2 class="text-xl font-bold text-gray-900 mb-1">Access Restricted</h2>
+                            <p class="text-sm text-gray-500">A valid credential authentication token is required to test this environment framework.</p>
+                            <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-ucdPrimary text-white text-xs font-semibold rounded hover:bg-opacity-90">Retry Access</button>
+                        </div>`;
+                    return;
+                }
+                
+                if (entry === ACCESS_PASSWORD) {
+                    sessionStorage.setItem("calculator_auth", "true");
+                    authenticated = true;
+                } else {
+                    alert("Incorrect password choice pattern. Please try again.");
+                }
+            }
+        })();
+
+        // Primary Interface Routine
         function handleLevelChange() {
             if (typeof UCD_FINANCIAL_DATABASE === 'undefined') {
-                console.error("Critical Error: 'calculator-db.js' failed to load or link properly.");
+                console.error("Critical Error: 'calculator-db.js' dependencies are unreachable or blocked.");
                 return;
             }
 
@@ -236,6 +243,7 @@
             calculateFinancials();
         }
 
+        // Calculation Controller Engine Pipeline Loop
         function calculateFinancials() {
             const level = document.getElementById("academicLevel").value;
             const field = document.getElementById("fieldOfStudy").value;
@@ -321,7 +329,12 @@
             return "$" + Math.round(amount).toLocaleString();
         }
 
-        window.onload = handleLevelChange;
+        // Initialize display configuration logic after checking for validation gating status above
+        window.onload = function() {
+            if (sessionStorage.getItem("calculator_auth") === "true") {
+                handleLevelChange();
+            }
+        };
     </script>
 </body>
 </html>
