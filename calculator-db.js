@@ -9,7 +9,7 @@ const UCD_FINANCIAL_DATABASE = {
     metadata: {
         lastUpdated: "June 2026",
         academicYear: "2026/2027",
-        institutionalExchangeRate: 1.10 // €1.00 EUR = $1.10 USD
+        institutionalExchangeRate: 1.16 // €1.00 EUR = $1.16 USD
     },
 
     mandatoryFees: {},
