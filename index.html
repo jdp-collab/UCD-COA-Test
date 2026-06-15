@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UCD Cost of Attendance & US Federal Loan Calculator</title>
+    <title>PROTOTYPE UCD Cost of Attendance & US Federal Loan Calculator</title>
+    <!-- Tailwind CSS for modern, zero-maintenance styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,13 +21,15 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen pb-12">
 
+    <!-- Header Section -->
     <header class="bg-ucdPrimary text-white py-8 px-4 shadow-md mb-8">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="flex items-center gap-5">
+                <!-- Institutional Crest Integration -->
                 <img src="https://www.ucd.ie/t4media/crest-ucd.svg" alt="University College Dublin Crest" class="h-16 w-auto bg-white p-1 rounded shadow-sm flex-shrink-0" />
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold tracking-tight">University College Dublin</h1>
-                    <p class="text-blue-100 mt-1">North American Student Financial Aid Planner (Non-EU Estimation Tool)</p>
+                    <p class="text-blue-100 mt-1">PROTOTYPE North American Student Financial Aid Planner (Non-EU Estimation Tool)</p>
                 </div>
             </div>
             <div class="bg-[#02132e] px-4 py-2 rounded text-xs text-blue-200 border border-slate-800 flex-shrink-0 self-start md:self-center">
@@ -37,10 +40,12 @@
 
     <main class="max-w-5xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
+        <!-- INPUT CONFIGURATION FORM (5 Columns wide) -->
         <section class="lg:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit">
             <h2 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">1. Student Parameters</h2>
             
             <form id="calcForm" class="space-y-5">
+                <!-- Academic Level -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Academic Degree Level</label>
                     <select id="academicLevel" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="handleLevelChange()">
@@ -49,12 +54,15 @@
                     </select>
                 </div>
 
+                <!-- Field of Study (Populated Dynamically from calculator-db.js) -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study / College Track</label>
                     <select id="fieldOfStudy" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
-                        </select>
+                        <!-- Options populated dynamically by script -->
+                    </select>
                 </div>
 
+                <!-- FAFSA Dependency Status -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">FAFSA Dependency Status</label>
                     <select id="dependencyStatus" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
@@ -64,6 +72,7 @@
                     <p class="text-xs text-gray-400 mt-1">Graduate students default entirely to Independent logic.</p>
                 </div>
 
+                <!-- Undergraduate Progression Year -->
                 <div id="yearGroup">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Year of Study</label>
                     <select id="undergradYear" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
@@ -79,20 +88,10 @@
             </div>
         </section>
 
+        <!-- OUTPUT DASHBOARD PANEL (7 Columns wide) -->
         <section class="lg:col-span-7 space-y-6">
             
-            <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700">Display Currency View:</span>
-                <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <button type="button" id="currencyUSD" onclick="setCurrency('USD')" class="px-4 py-2 text-xs font-bold rounded-l-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors">
-                        USD ($)
-                    </button>
-                    <button type="button" id="currencyEUR" onclick="setCurrency('EUR')" class="px-4 py-2 text-xs font-bold rounded-r-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors">
-                        EUR (€)
-                    </button>
-                </div>
-            </div>
-            
+            <!-- Compliance Intercept Alert Box -->
             <div id="complianceAlert" class="hidden bg-red-50 border border-red-200 p-5 rounded-xl text-red-900">
                 <div class="flex gap-3">
                     <span class="text-2xl">⚠️</span>
@@ -103,49 +102,64 @@
                 </div>
             </div>
 
+            <!-- Main Calculation Panels -->
             <div id="dashboardResults" class="space-y-6">
+                <!-- Row 1: The Consolidated Summary Card -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="border-b sm:border-b-0 sm:border-r border-gray-100 pb-4 sm:pb-0 sm:pr-4 text-center sm:text-left">
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Annual Expenses</h3>
-                        <div class="text-3xl font-extrabold text-gray-900 mt-2" id="totalCostDisplay">$0</div>
-                        <div class="text-xs text-gray-400 mt-2">Combines tuition, fixed campus levies, and full local cost of living estimates.</div>
+                        <div class="text-3xl font-extrabold text-gray-900 mt-2" id="totalCostUSD">$0</div>
+                        <div class="text-sm font-semibold text-ucdSecondary mt-0.5" id="totalCostEUR">€0</div>
+                        <p class="text-xs text-gray-400 mt-2">Combined framework total covering all core institutional and living expenditures.</p>
                     </div>
                     <div class="text-center sm:text-left">
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Estimated Loan Portfolio</h3>
-                        <div class="text-3xl font-extrabold text-ucdSecondary mt-2" id="totalAidDisplay">$0</div>
-                        <p class="text-xs text-gray-500 mt-1">Total Title IV loan funding ceiling allowed based on institutional parameters.</p>
+                        <div class="text-3xl font-extrabold text-emerald-700 mt-2" id="totalAidUSD">$0</div>
+                        <div class="text-sm font-semibold text-emerald-600 mt-0.5" id="totalAidEUR">€0</div>
+                        <p class="text-xs text-gray-400 mt-2">Maximum Title IV funding ceiling mapped from federal constraints.</p>
                     </div>
                 </div>
 
+                <!-- Financial Component Explanations -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="font-bold text-gray-900">Expense Breakdown</h3>
                     </div>
                     <div class="p-6 divide-y divide-gray-100">
-                        <div class="flex justify-between py-3">
+                        <div class="flex justify-between py-3 items-center">
                             <div>
-                                <span class="font-medium text-gray-900">Non-EU Tuition Fees</span>
-                                <span class="block text-xs text-gray-400">Determined by chosen college track</span>
+                                <span class="font-medium text-gray-900 block">Non-EU Tuition Fees</span>
+                                <span class="text-xs text-gray-400">Determined by chosen college track</span>
                             </div>
-                            <span class="font-semibold text-gray-900" id="itemTuition">$0</span>
+                            <div class="text-right">
+                                <span class="font-semibold text-gray-900 block" id="itemTuitionUSD">$0</span>
+                                <span class="text-xs font-medium text-ucdSecondary block" id="itemTuitionEUR">€0</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between py-3">
+                        <div class="flex justify-between py-3 items-center">
                             <div>
-                                <span class="font-medium text-gray-900">UCD Student Center Levy</span>
-                                <span class="block text-xs text-gray-400">Fixed institutional fee applied to all students</span>
+                                <span class="font-medium text-gray-900 block">UCD Student Center Levy</span>
+                                <span class="text-xs text-gray-400">Fixed institutional fee applied to all students</span>
                             </div>
-                            <span class="font-semibold text-gray-900" id="itemLevy">$0</span>
+                            <div class="text-right">
+                                <span class="font-semibold text-gray-900 block" id="itemLevyUSD">$0</span>
+                                <span class="text-xs font-medium text-ucdSecondary block" id="itemLevyEUR">€0</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between py-3">
+                        <div class="flex justify-between py-3 items-center">
                             <div>
-                                <span class="font-medium text-gray-900">Estimated Cost of Living</span>
-                                <span class="block text-xs text-gray-400" id="livingTimelineLabel">Calculated monthly baseline</span>
+                                <span class="font-medium text-gray-900 block">Estimated Cost of Living</span>
+                                <span class="text-xs text-gray-400" id="livingTimelineLabel">Calculated monthly baseline</span>
                             </div>
-                            <span class="font-semibold text-gray-900" id="itemLiving">$0</span>
+                            <div class="text-right">
+                                <span class="font-semibold text-gray-900 block" id="itemLivingUSD">$0</span>
+                                <span class="text-xs font-medium text-ucdSecondary block" id="itemLivingEUR">€0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Federal Student Aid Portfolio Breakdown -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="bg-ucdPrimary text-white px-6 py-4">
                         <h3 class="font-bold">US Federal Loan Allocation Blueprint</h3>
@@ -156,7 +170,10 @@
                                 <h4 class="font-bold text-gray-900">Direct Subsidized Loan</h4>
                                 <p class="text-xs text-gray-500">Interest does not accumulate while enrolled at least half-time.</p>
                             </div>
-                            <div class="text-right font-bold text-lg text-gray-900" id="aidSubsidized">$0</div>
+                            <div class="text-right">
+                                <span class="font-bold text-lg text-gray-900 block" id="aidSubsidizedUSD">$0</span>
+                                <span class="text-xs font-semibold text-slate-500 block" id="aidSubsidizedEUR">€0</span>
+                            </div>
                         </div>
 
                         <div class="bg-gray-50 p-4 rounded-lg flex justify-between items-center">
@@ -164,7 +181,10 @@
                                 <h4 class="font-bold text-gray-900">Direct Unsubsidized Loan</h4>
                                 <p class="text-xs text-gray-500">Interest accumulates upon immediate payout disbursement.</p>
                             </div>
-                            <div class="text-right font-bold text-lg text-gray-900" id="aidUnsubsidized">$0</div>
+                            <div class="text-right">
+                                <span class="font-bold text-lg text-gray-900 block" id="aidUnsubsidizedUSD">$0</span>
+                                <span class="text-xs font-semibold text-slate-500 block" id="aidUnsubsidizedEUR">€0</span>
+                            </div>
                         </div>
 
                         <div class="bg-blue-50/50 border border-blue-100 p-4 rounded-lg flex justify-between items-center">
@@ -172,11 +192,15 @@
                                 <h4 class="font-bold text-ucdPrimary" id="plusTitle">Direct PLUS Loan</h4>
                                 <p class="text-xs text-slate-600">Covers remaining financial gaps up to the total institutional COA.</p>
                             </div>
-                            <div class="text-right font-bold text-lg text-ucdSecondary" id="aidPlus">$0</div>
+                            <div class="text-right">
+                                <span class="font-bold text-lg text-ucdPrimary block" id="aidPlusUSD">$0</span>
+                                <span class="text-xs font-semibold text-ucdSecondary block" id="aidPlusEUR">€0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Compliance Footnote & Disclaimers -->
                 <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-xs text-gray-500 leading-relaxed space-y-2">
                     <p><strong>Disclaimer Notice:</strong> This calculator offers financial estimates for general reference only. Official Cost of Attendance parameters are certified explicitly in Euros (€) inside the secure UCD student portal (SISweb) during processing. US Federal Student Aid limits are strictly determined by the US Department of Education guidelines.</p>
                     <p>Actual dollar disbursements fluctuate over the calendar year based on ongoing market currency conversion adjustments. Pell Grants and other standard US federal grants are ineligible at international non-US institutions.</p>
@@ -185,15 +209,14 @@
         </section>
     </main>
 
+    <!-- STEP 1: IMPORT EXTERNAL DATABASE ATTACHMENT -->
     <script src="calculator-db.js"></script>
 
+    <!-- STEP 2: FRONTEND LOGIC & PROTECTION CONTROLLER -->
     <script>
-        // Global view state tracker
-        let CURRENT_CURRENCY = 'USD';
-
         // GATEWAY SYSTEM: Halts parsing sequence immediately if authorization criteria fails
         (function() {
-            const ACCESS_PASSWORD = "UCD_Aid_Test_2026";
+            const ACCESS_PASSWORD = "Belfield1854";
             let authenticated = false;
             
             if (sessionStorage.getItem("calculator_auth") === "true") {
@@ -222,24 +245,6 @@
                 }
             }
         })();
-
-        // Handle Currency Button State Shifts
-        function setCurrency(currencyCode) {
-            CURRENT_CURRENCY = currencyCode;
-            
-            const btnUSD = document.getElementById("currencyUSD");
-            const btnEUR = document.getElementById("currencyEUR");
-            
-            if (currencyCode === 'USD') {
-                btnUSD.className = "px-4 py-2 text-xs font-bold rounded-l-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors";
-                btnEUR.className = "px-4 py-2 text-xs font-bold rounded-r-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors";
-            } else {
-                btnUSD.className = "px-4 py-2 text-xs font-bold rounded-l-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors";
-                btnEUR.className = "px-4 py-2 text-xs font-bold rounded-r-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors";
-            }
-            
-            calculateFinancials();
-        }
 
         // Primary Interface Routine
         function handleLevelChange() {
@@ -301,7 +306,7 @@
                 dashboard.classList.remove("hidden");
             }
 
-            // --- 1. GET RAW EXPENSES IN BASE CURRENCY (EUR) ---
+            // --- 1. CORE MATH IN BASE EUR ---
             const tuitionEUR = UCD_FINANCIAL_DATABASE.tuitionRatesEUR[level][field];
             const levyEUR = UCD_FINANCIAL_DATABASE.mandatoryFees.studentCenterLevyEUR;
             
@@ -312,10 +317,13 @@
             const livingEUR = (monthlyLivingTotalEUR * colMonths) + annualFixedLivingEUR;
             const totalCOA_EUR = tuitionEUR + levyEUR + livingEUR;
 
-            // --- 2. CALCULATE FULL COA MATRIX IN BOTH CURRENCIES ---
+            // --- 2. CURRENCY CONVERSION STAGE (EUR TO USD) ---
+            const tuitionUSD = tuitionEUR * fxRate;
+            const levyUSD = levyEUR * fxRate;
+            const livingUSD = livingEUR * fxRate;
             const totalCOA_USD = totalCOA_EUR * fxRate;
 
-            // --- 3. EXECUTE LOAN LIMIT MATCHING STRATEGY (ALWAYS CALCULATED IN STATUTORY USD) ---
+            // --- 3. EXECUTE LOAN LIMIT MATCHING STRATEGY (USD STANDARD CAPS) ---
             let maxSub_USD = 0;
             let maxUnsub_USD = 0;
 
@@ -336,6 +344,7 @@
                 }
             }
 
+            // Cap allocations at limits or remaining balances
             let allowedSub_USD = Math.min(maxSub_USD, totalCOA_USD);
             let remainingCOA_USD = totalCOA_USD - allowedSub_USD;
 
@@ -345,54 +354,37 @@
             let allowedPlus_USD = Math.max(0, remainingCOA_USD);
             let totalAidPackage_USD = allowedSub_USD + allowedUnsub_USD + allowedPlus_USD;
 
-            // --- 4. DETERMINE MULTIPLIERS FOR USER VIEW ---
-            let tuitionDisplay, levyDisplay, livingDisplay, totalDisplay;
-            let subAidDisplay, unsubAidDisplay, plusAidDisplay, totalAidDisplay;
+            // --- 4. RENDER SIMULTANEOUS SIDE-BY-SIDE METRICS ---
+            // Aggregate Summaries
+            document.getElementById("totalCostUSD").innerText = formatUSD(totalCOA_USD);
+            document.getElementById("totalCostEUR").innerText = formatEUR(totalCOA_EUR);
+            document.getElementById("totalAidUSD").innerText = formatUSD(totalAidPackage_USD);
+            document.getElementById("totalAidEUR").innerText = formatEUR(totalAidPackage_USD / fxRate);
 
-            if (CURRENT_CURRENCY === 'EUR') {
-                // Convert values down to EUR for display output
-                tuitionDisplay = tuitionEUR;
-                levyDisplay = levyEUR;
-                livingDisplay = livingEUR;
-                totalDisplay = totalCOA_EUR;
-                
-                subAidDisplay = allowedSub_USD / fxRate;
-                unsubAidDisplay = allowedUnsub_USD / fxRate;
-                plusAidDisplay = allowedPlus_USD / fxRate;
-                totalAidDisplay = totalAidPackage_USD / fxRate;
-            } else {
-                // Keep values in USD for display output
-                tuitionDisplay = tuitionEUR * fxRate;
-                levyDisplay = levyEUR * fxRate;
-                livingDisplay = livingEUR * fxRate;
-                totalDisplay = totalCOA_USD;
-                
-                subAidDisplay = allowedSub_USD;
-                unsubAidDisplay = allowedUnsub_USD;
-                plusAidDisplay = allowedPlus_USD;
-                totalAidDisplay = totalAidPackage_USD;
-            }
-
-            // --- 5. RENDER CHOSEN CONFIGURATION TO THE DOM ---
-            document.getElementById("totalCostDisplay").innerText = formatCurrency(totalDisplay);
-            document.getElementById("totalAidDisplay").innerText = formatCurrency(totalAidDisplay);
-
-            document.getElementById("itemTuition").innerText = formatCurrency(tuitionDisplay);
-            document.getElementById("itemLevy").innerText = formatCurrency(levyDisplay);
-            document.getElementById("itemLiving").innerText = formatCurrency(livingDisplay);
+            // Cost Component Details
+            document.getElementById("itemTuitionUSD").innerText = formatUSD(tuitionUSD);
+            document.getElementById("itemTuitionEUR").innerText = formatEUR(tuitionEUR);
+            document.getElementById("itemLevyUSD").innerText = formatUSD(levyUSD);
+            document.getElementById("itemLevyEUR").innerText = formatEUR(levyEUR);
+            document.getElementById("itemLivingUSD").innerText = formatUSD(livingUSD);
+            document.getElementById("itemLivingEUR").innerText = formatEUR(livingEUR);
             document.getElementById("livingTimelineLabel").innerText = `Calculated for ${colMonths} months framework`;
 
-            document.getElementById("aidSubsidized").innerText = formatCurrency(subAidDisplay);
-            document.getElementById("aidUnsubsidized").innerText = formatCurrency(unsubAidDisplay);
-            document.getElementById("aidPlus").innerText = formatCurrency(plusAidDisplay);
+            // Loan Blueprint Allocation Elements
+            document.getElementById("aidSubsidizedUSD").innerText = formatUSD(allowedSub_USD);
+            document.getElementById("aidSubsidizedEUR").innerText = formatEUR(allowedSub_USD / fxRate);
+            document.getElementById("aidUnsubsidizedUSD").innerText = formatUSD(allowedUnsub_USD);
+            document.getElementById("aidUnsubsidizedEUR").innerText = formatEUR(allowedUnsub_USD / fxRate);
+            document.getElementById("aidPlusUSD").innerText = formatUSD(allowedPlus_USD);
+            document.getElementById("aidPlusEUR").innerText = formatEUR(allowedPlus_USD / fxRate);
         }
 
-        // Helper decorator reflecting active currency tokens
-        function formatCurrency(amount) {
-            if (CURRENT_CURRENCY === 'EUR') {
-                return "€" + Math.round(amount).toLocaleString();
-            }
+        // Formatting Helpers
+        function formatUSD(amount) {
             return "$" + Math.round(amount).toLocaleString();
+        }
+        function formatEUR(amount) {
+            return "€" + Math.round(amount).toLocaleString();
         }
 
         window.onload = function() {
