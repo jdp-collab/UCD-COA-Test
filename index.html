@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROTOTYPE UCD Cost of Attendance & US Federal Loan Calculator</title>
+    <title>UCD Cost of Attendance & US Federal Loan Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,12 +21,15 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen pb-12">
 
     <header class="bg-ucdPrimary text-white py-8 px-4 shadow-md mb-8">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold tracking-tight">University College Dublin</h1>
-                <p class="text-blue-100 mt-1">North American Student Financial Aid Planner (Non-EU Estimation Tool)</p>
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="flex items-center gap-5">
+                <img src="https://www.ucd.ie/t4media/crest-ucd.svg" alt="University College Dublin Crest" class="h-16 w-auto bg-white p-1 rounded shadow-sm flex-shrink-0" />
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold tracking-tight">University College Dublin</h1>
+                    <p class="text-blue-100 mt-1">North American Student Financial Aid Planner (Non-EU Estimation Tool)</p>
+                </div>
             </div>
-            <div class="bg-[#02132e] px-4 py-2 rounded text-xs text-blue-200 border border-slate-800">
+            <div class="bg-[#02132e] px-4 py-2 rounded text-xs text-blue-200 border border-slate-800 flex-shrink-0 self-start md:self-center">
                 School Code: <strong>G10188</strong> | Academic Year: 2026/2027
             </div>
         </div>
@@ -72,11 +75,23 @@
             </form>
 
             <div class="mt-8 pt-4 border-t border-gray-100 bg-blue-50/30 p-3 rounded-lg border border-blue-100/50 text-xs text-slate-700 leading-relaxed">
-                <strong>Anonymity Guard:</strong> Calculations run directly in your web browser via local static dependencies. No personal information is logged or transmitted.
+                <strong>Anonymity Guard:</strong> Calculations run directly in your web browser via local static dependencies. No personal information is logged or transmitted, ensuring absolute GDPR and FERPA tracking compliance.
             </div>
         </section>
 
         <section class="lg:col-span-7 space-y-6">
+            
+            <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700">Display Currency View:</span>
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button type="button" id="currencyUSD" onclick="setCurrency('USD')" class="px-4 py-2 text-xs font-bold rounded-l-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors">
+                        USD ($)
+                    </button>
+                    <button type="button" id="currencyEUR" onclick="setCurrency('EUR')" class="px-4 py-2 text-xs font-bold rounded-r-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors">
+                        EUR (€)
+                    </button>
+                </div>
+            </div>
             
             <div id="complianceAlert" class="hidden bg-red-50 border border-red-200 p-5 rounded-xl text-red-900">
                 <div class="flex gap-3">
@@ -92,13 +107,12 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="border-b sm:border-b-0 sm:border-r border-gray-100 pb-4 sm:pb-0 sm:pr-4 text-center sm:text-left">
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Annual Expenses</h3>
-                        <div class="text-3xl font-extrabold text-gray-900 mt-2" id="totalCostUSD">$0</div>
-                        <div class="text-sm text-gray-500 mt-0.5" id="totalCostEUR">approx. €0</div>
-                        <p class="text-xs text-gray-400 mt-2">Combines tuition, fixed campus levies, and full local cost of living estimates.</p>
+                        <div class="text-3xl font-extrabold text-gray-900 mt-2" id="totalCostDisplay">$0</div>
+                        <div class="text-xs text-gray-400 mt-2">Combines tuition, fixed campus levies, and full local cost of living estimates.</div>
                     </div>
                     <div class="text-center sm:text-left">
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Estimated Loan Portfolio</h3>
-                        <div class="text-3xl font-extrabold text-ucdSecondary mt-2" id="totalAidUSD">$0</div>
+                        <div class="text-3xl font-extrabold text-ucdSecondary mt-2" id="totalAidDisplay">$0</div>
                         <p class="text-xs text-gray-500 mt-1">Total Title IV loan funding ceiling allowed based on institutional parameters.</p>
                     </div>
                 </div>
@@ -174,9 +188,12 @@
     <script src="calculator-db.js"></script>
 
     <script>
+        // Global view state tracker
+        let CURRENT_CURRENCY = 'USD';
+
         // GATEWAY SYSTEM: Halts parsing sequence immediately if authorization criteria fails
         (function() {
-            const ACCESS_PASSWORD = "Belfield1854"; // Feel free to update this target key anytime
+            const ACCESS_PASSWORD = "UCD_Aid_Test_2026";
             let authenticated = false;
             
             if (sessionStorage.getItem("calculator_auth") === "true") {
@@ -187,7 +204,6 @@
                 let entry = prompt("Please enter the internal access password to view this UCD Financial Prototype:");
                 
                 if (entry === null) {
-                    // Wipes DOM structure clean if user exits window tracking alert context
                     document.body.innerHTML = `
                         <div class="max-w-md mx-auto mt-24 p-6 bg-white border border-gray-200 rounded-xl shadow-sm text-center">
                             <div class="text-4xl mb-3">🔒</div>
@@ -206,6 +222,24 @@
                 }
             }
         })();
+
+        // Handle Currency Button State Shifts
+        function setCurrency(currencyCode) {
+            CURRENT_CURRENCY = currencyCode;
+            
+            const btnUSD = document.getElementById("currencyUSD");
+            const btnEUR = document.getElementById("currencyEUR");
+            
+            if (currencyCode === 'USD') {
+                btnUSD.className = "px-4 py-2 text-xs font-bold rounded-l-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors";
+                btnEUR.className = "px-4 py-2 text-xs font-bold rounded-r-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors";
+            } else {
+                btnUSD.className = "px-4 py-2 text-xs font-bold rounded-l-lg bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200 transition-colors";
+                btnEUR.className = "px-4 py-2 text-xs font-bold rounded-r-lg bg-ucdPrimary text-white border border-ucdPrimary transition-colors";
+            }
+            
+            calculateFinancials();
+        }
 
         // Primary Interface Routine
         function handleLevelChange() {
@@ -267,6 +301,7 @@
                 dashboard.classList.remove("hidden");
             }
 
+            // --- 1. GET RAW EXPENSES IN BASE CURRENCY (EUR) ---
             const tuitionEUR = UCD_FINANCIAL_DATABASE.tuitionRatesEUR[level][field];
             const levyEUR = UCD_FINANCIAL_DATABASE.mandatoryFees.studentCenterLevyEUR;
             
@@ -275,61 +310,91 @@
             const annualFixedLivingEUR = Object.values(UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.annualFixedExpenses).reduce((a, b) => a + b, 0);
             
             const livingEUR = (monthlyLivingTotalEUR * colMonths) + annualFixedLivingEUR;
-            const totalEUR = tuitionEUR + levyEUR + livingEUR;
+            const totalCOA_EUR = tuitionEUR + levyEUR + livingEUR;
 
-            const tuitionUSD = tuitionEUR * fxRate;
-            const levyUSD = levyEUR * fxRate;
-            const livingUSD = livingEUR * fxRate;
-            const totalCOA_USD = totalEUR * fxRate;
+            // --- 2. CALCULATE FULL COA MATRIX IN BOTH CURRENCIES ---
+            const totalCOA_USD = totalCOA_EUR * fxRate;
 
-            let maxSub = 0;
-            let maxUnsub = 0;
+            // --- 3. EXECUTE LOAN LIMIT MATCHING STRATEGY (ALWAYS CALCULATED IN STATUTORY USD) ---
+            let maxSub_USD = 0;
+            let maxUnsub_USD = 0;
 
             if (level === "graduate") {
-                maxSub = 0;
-                maxUnsub = 20500;
+                maxSub_USD = 0;
+                maxUnsub_USD = 20500;
                 document.getElementById("plusTitle").innerText = "Direct Graduate PLUS Loan";
             } else {
                 document.getElementById("plusTitle").innerText = "Direct Parent PLUS Loan";
                 if (dependency === "dependent") {
-                    if (year === 1) { maxSub = 3500; maxUnsub = 2000; }
-                    else if (year === 2) { maxSub = 4500; maxUnsub = 2000; }
-                    else { maxSub = 5500; maxUnsub = 2000; }
+                    if (year === 1) { maxSub_USD = 3500; maxUnsub_USD = 2000; }
+                    else if (year === 2) { maxSub_USD = 4500; maxUnsub_USD = 2000; }
+                    else { maxSub_USD = 5500; maxUnsub_USD = 2000; }
                 } else {
-                    if (year === 1) { maxSub = 3500; maxUnsub = 6000; }
-                    else if (year === 2) { maxSub = 4500; maxUnsub = 6000; }
-                    else { maxSub = 5500; maxUnsub = 7000; }
+                    if (year === 1) { maxSub_USD = 3500; maxUnsub_USD = 6000; }
+                    else if (year === 2) { maxSub_USD = 4500; maxUnsub_USD = 6000; }
+                    else { maxSub_USD = 5500; maxUnsub_USD = 7000; }
                 }
             }
 
-            let allowedSub = Math.min(maxSub, totalCOA_USD);
-            let remainingCOA = totalCOA_USD - allowedSub;
+            let allowedSub_USD = Math.min(maxSub_USD, totalCOA_USD);
+            let remainingCOA_USD = totalCOA_USD - allowedSub_USD;
 
-            let allowedUnsub = Math.min(maxUnsub, remainingCOA);
-            remainingCOA -= allowedUnsub;
+            let allowedUnsub_USD = Math.min(maxUnsub_USD, remainingCOA_USD);
+            remainingCOA_USD -= allowedUnsub_USD;
 
-            let allowedPlus = Math.max(0, remainingCOA);
-            let totalAidPackage = allowedSub + allowedUnsub + allowedPlus;
+            let allowedPlus_USD = Math.max(0, remainingCOA_USD);
+            let totalAidPackage_USD = allowedSub_USD + allowedUnsub_USD + allowedPlus_USD;
 
-            document.getElementById("totalCostUSD").innerText = formatCurrency(totalCOA_USD);
-            document.getElementById("totalCostEUR").innerText = `approx. €${Math.round(totalEUR).toLocaleString()}`;
-            document.getElementById("totalAidUSD").innerText = formatCurrency(totalAidPackage);
+            // --- 4. DETERMINE MULTIPLIERS FOR USER VIEW ---
+            let tuitionDisplay, levyDisplay, livingDisplay, totalDisplay;
+            let subAidDisplay, unsubAidDisplay, plusAidDisplay, totalAidDisplay;
 
-            document.getElementById("itemTuition").innerText = formatCurrency(tuitionUSD);
-            document.getElementById("itemLevy").innerText = formatCurrency(levyUSD);
-            document.getElementById("itemLiving").innerText = formatCurrency(livingUSD);
+            if (CURRENT_CURRENCY === 'EUR') {
+                // Convert values down to EUR for display output
+                tuitionDisplay = tuitionEUR;
+                levyDisplay = levyEUR;
+                livingDisplay = livingEUR;
+                totalDisplay = totalCOA_EUR;
+                
+                subAidDisplay = allowedSub_USD / fxRate;
+                unsubAidDisplay = allowedUnsub_USD / fxRate;
+                plusAidDisplay = allowedPlus_USD / fxRate;
+                totalAidDisplay = totalAidPackage_USD / fxRate;
+            } else {
+                // Keep values in USD for display output
+                tuitionDisplay = tuitionEUR * fxRate;
+                levyDisplay = levyEUR * fxRate;
+                livingDisplay = livingEUR * fxRate;
+                totalDisplay = totalCOA_USD;
+                
+                subAidDisplay = allowedSub_USD;
+                unsubAidDisplay = allowedUnsub_USD;
+                plusAidDisplay = allowedPlus_USD;
+                totalAidDisplay = totalAidPackage_USD;
+            }
+
+            // --- 5. RENDER CHOSEN CONFIGURATION TO THE DOM ---
+            document.getElementById("totalCostDisplay").innerText = formatCurrency(totalDisplay);
+            document.getElementById("totalAidDisplay").innerText = formatCurrency(totalAidDisplay);
+
+            document.getElementById("itemTuition").innerText = formatCurrency(tuitionDisplay);
+            document.getElementById("itemLevy").innerText = formatCurrency(levyDisplay);
+            document.getElementById("itemLiving").innerText = formatCurrency(livingDisplay);
             document.getElementById("livingTimelineLabel").innerText = `Calculated for ${colMonths} months framework`;
 
-            document.getElementById("aidSubsidized").innerText = formatCurrency(allowedSub);
-            document.getElementById("aidUnsubsidized").innerText = formatCurrency(allowedUnsub);
-            document.getElementById("aidPlus").innerText = formatCurrency(allowedPlus);
+            document.getElementById("aidSubsidized").innerText = formatCurrency(subAidDisplay);
+            document.getElementById("aidUnsubsidized").innerText = formatCurrency(unsubAidDisplay);
+            document.getElementById("aidPlus").innerText = formatCurrency(plusAidDisplay);
         }
 
+        // Helper decorator reflecting active currency tokens
         function formatCurrency(amount) {
+            if (CURRENT_CURRENCY === 'EUR') {
+                return "€" + Math.round(amount).toLocaleString();
+            }
             return "$" + Math.round(amount).toLocaleString();
         }
 
-        // Initialize display configuration logic after checking for validation gating status above
         window.onload = function() {
             if (sessionStorage.getItem("calculator_auth") === "true") {
                 handleLevelChange();
