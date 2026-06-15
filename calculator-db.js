@@ -1,29 +1,27 @@
 /**
- * UCD COST OF ATTENDANCE & LOAN CALCULATOR - STATIC DATABASE
- * Update this file once a year (typically April/May) to maintain accuracy.
+ * UCD COST OF ATTENDANCE & LOAN CALCULATOR - PROTOTYPE DATABASE
  * Base currency for institutional charges is EUR (€).
  * Base currency for US Federal Loans is USD ($).
+ * Update this configuration file annually (typically April/May).
  */
 
 const UCD_FINANCIAL_DATABASE = {
     metadata: {
         lastUpdated: "June 2026",
         academicYear: "2026/2027",
-        // Flat conversion rate used to keep estimates stable for prospective students
+        // Flat conversion baseline used to keep estimates stable for prospective planning
         institutionalExchangeRate: 1.16 // €1.00 EUR = $1.16 USD
     },
 
-    // Fixed institutional fees applied to ALL international students
-    mandatoryFees: {
-        studentCenterLevyEUR: 254
-    },
+    // Fixed institutional fees (References to Student Centre Levy completely removed)
+    mandatoryFees: {},
 
     // Non-EU International Tuition Rates (Estimated Averages per Academic Year)
     tuitionRatesEUR: {
         undergraduate: {
-            "Arts & Humanities": 22600,
+            "Classroom - Arts & Humanities, Social Sciences & Law": 22600,
             "Business": 23170,
-            "Science & Engineering": 29500,
+            "Labratory - Agriculture, Science, & Engineering": 29500,
             "Veterinary Medicine": 38000,
             "Medicine": 63890
         },
@@ -33,34 +31,33 @@ const UCD_FINANCIAL_DATABASE = {
             "Labratory - Agriculture, Science & Engineering": 29500,
             "Veterinary Medicine (Graduate Entry)": 44880,
             "Medicine (Graduate Entry)": 66360
-
         }
     },
 
-    // Standardized Cost of Living (COL) Baselines for Dublin
+    // Standardized Cost of Living (COL) Baselines for the Dublin Housing Market
     costOfLivingMonthlyEUR: {
-        // Multipliers based on typical visa/academic timeline requirements
+        // Multipliers based on typical student visa / trimester requirements
         durationMonths: {
-            undergraduate: 9, // Autumn & Spring trimesters
+            undergraduate: 9, // Autumn & Spring Trimesters
             graduate: 12      // Full calendar year for Masters research/dissertations
         },
-        // Estimated realistic breakdown of monthly expenses in Dublin
+        // Individual monthly expense items displayed line-by-line in the prototype UI
         breakdown: {
-            accommodation: 1200, // Average for shared/on-campus accommodation
-            foodAndGroceries: 490,
-            localTransport: 75,  // Assumes use of Student Leap Card
-            utilitiesAndInternet: 135,
-            miscellaneousPersonal: 110,
-            internetAndmobile: 45,
-            clothingAndhygiene: 150,
-            booksAndcopying: 120,
-            personalAndsocial: 120
+            "Rent & On-Campus/Shared Housing": 1200,
+            "Food & Groceries": 490,
+            "Local Public Transport (Student Leap Card)": 75,
+            "Utilities, Heating & Broadband": 135,
+            "Books & Copying": 120,
+            "Clothing & Hygiene": 150,
+            "Internet & Mobile": 45,
+            "Personal & Social": 120,
+            "Miscellaneous": 110
         },
-        // One-time fixed annual personal expenses
+        // Individual one-time annual personal expense items displayed line-by-line in the prototype UI
         annualFixedExpenses: {
-            mandatoryHealthInsurance: 690, // Required for non-EU Student Visa
-            irishResidencePermit: 300,
-            flights: 1200     // Average roundtrips home
+            "Mandatory Non-EU Student Health Insurance": 690,
+            "Irish Residence Permit": 300,
+            "Roundtrip Flights": 1200
         }
     },
 
@@ -79,7 +76,6 @@ const UCD_FINANCIAL_DATABASE = {
     }
 };
 
-// Exporting the module so it can be used in your application scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = UCD_FINANCIAL_DATABASE;
 }
