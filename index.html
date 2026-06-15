@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[PROTOTYPE] UCD Cost of Attendance & US Federal Loan Calculator</title>
+    <!-- Tailwind CSS for modern, zero-maintenance styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,6 +21,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen pb-12">
 
+    <!-- Header Section -->
     <header class="bg-ucdPrimary text-white py-8 px-4 shadow-md mb-8 border-b-4 border-ucdSecondary">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="flex items-center gap-5">
@@ -40,10 +42,12 @@
 
     <main class="max-w-5xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
+        <!-- INPUT CONFIGURATION FORM (5 Columns wide) -->
         <section class="lg:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit">
             <h2 class="text-xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-100">1. Student Parameters</h2>
             
             <form id="calcForm" class="space-y-5">
+                <!-- Academic Level -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Academic Degree Level</label>
                     <select id="academicLevel" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="handleLevelChange()">
@@ -52,12 +56,15 @@
                     </select>
                 </div>
 
+                <!-- Field of Study -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study / College Track</label>
                     <select id="fieldOfStudy" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
-                        </select>
+                        <!-- Options populated dynamically by script -->
+                    </select>
                 </div>
 
+                <!-- FAFSA Dependency Status -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">FAFSA Dependency Status</label>
                     <select id="dependencyStatus" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
@@ -67,6 +74,7 @@
                     <p class="text-xs text-gray-400 mt-1">Graduate students default entirely to Independent logic.</p>
                 </div>
 
+                <!-- Undergraduate Progression Year -->
                 <div id="yearGroup">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Year of Study</label>
                     <select id="undergradYear" class="w-full rounded-md border-gray-300 shadow-sm p-2.5 bg-gray-50 border focus:ring-2 focus:ring-ucdSecondary focus:bg-white outline-none" onchange="calculateFinancials()">
@@ -82,8 +90,10 @@
             </div>
         </section>
 
+        <!-- OUTPUT DASHBOARD PANEL (7 Columns wide) -->
         <section class="lg:col-span-7 space-y-6">
             
+            <!-- Compliance Intercept Alert Box -->
             <div id="complianceAlert" class="hidden bg-red-50 border border-red-200 p-5 rounded-xl text-red-900">
                 <div class="flex gap-3">
                     <span class="text-2xl">⚠️</span>
@@ -94,7 +104,9 @@
                 </div>
             </div>
 
+            <!-- Main Calculation Panels -->
             <div id="dashboardResults" class="space-y-6">
+                <!-- Row 1: The Consolidated Summary Card -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="border-b sm:border-b-0 sm:border-r border-gray-100 pb-4 sm:pb-0 sm:pr-4 text-center sm:text-left">
                         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Annual Expenses</h3>
@@ -103,13 +115,14 @@
                         <p class="text-xs text-gray-400 mt-2">Combined framework total covering all core institutional and living expenditures.</p>
                     </div>
                     <div class="text-center sm:text-left">
-                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Estimated Loan Portfolio</h3>
+                        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Federal Loan Financing</h3>
                         <div class="text-3xl font-extrabold text-emerald-700 mt-2" id="totalAidUSD">$0</div>
                         <div class="text-sm font-semibold text-emerald-600 mt-0.5" id="totalAidEUR">€0</div>
-                        <p class="text-xs text-gray-400 mt-2">Maximum Title IV funding ceiling mapped from federal constraints.</p>
+                        <p class="text-xs text-gray-400 mt-2">Maximum certified federal aid package permitted under OBBBA rules.</p>
                     </div>
                 </div>
 
+                <!-- Delineated Financial Component Explanations -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="font-bold text-gray-900">[PROTOTYPE] Delineated Expense Breakdown</h3>
@@ -117,6 +130,7 @@
                     </div>
                     
                     <div class="p-6 space-y-6">
+                        <!-- CATEGORY A: TUITION -->
                         <div>
                             <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">Core Academic Tuition</h4>
                             <div class="flex justify-between py-2 items-center">
@@ -131,26 +145,28 @@
                             </div>
                         </div>
 
+                        <!-- CATEGORY B: MONTHLY ALLOWANCES -->
                         <div>
                             <div class="flex justify-between items-baseline mb-2 pb-1 border-b border-gray-100">
                                 <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider">Estimated Monthly Costs</h4>
                                 <span class="text-[10px] text-gray-400 font-medium" id="monthlyMultiplierNote"></span>
                             </div>
-                            <div class="divide-y divide-gray-50" id="monthlyCostsContainer">
-                                </div>
+                            <div class="divide-y divide-gray-50" id="monthlyCostsContainer"></div>
                         </div>
 
+                        <!-- CATEGORY C: ANNUAL FIXED COSTS -->
                         <div>
                             <h4 class="text-xs font-bold text-ucdPrimary uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">One-Time / Annual Fixed Expenses</h4>
-                            <div class="divide-y divide-gray-50" id="annualFixedContainer">
-                                </div>
+                            <div class="divide-y divide-gray-50" id="annualFixedContainer"></div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Federal Student Aid Portfolio Breakdown -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="bg-ucdPrimary text-white px-6 py-4">
+                    <div class="bg-ucdPrimary text-white px-6 py-4 flex justify-between items-center">
                         <h3 class="font-bold">US Federal Loan Allocation Blueprint</h3>
+                        <span class="bg-amber-400 text-ucdPrimary text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">OBBBA Framework Compliant</span>
                     </div>
                     <div class="p-6 space-y-4">
                         <div class="bg-gray-50 p-4 rounded-lg flex justify-between items-center">
@@ -175,22 +191,34 @@
                             </div>
                         </div>
 
-                        <div class="bg-blue-50/50 border border-blue-100 p-4 rounded-lg flex justify-between items-center">
+                        <div id="plusLoanRow" class="bg-gray-50 p-4 rounded-lg flex justify-between items-center">
                             <div>
-                                <h4 class="font-bold text-ucdPrimary" id="plusTitle">Direct PLUS Loan</h4>
-                                <p class="text-xs text-slate-600">Covers remaining financial gaps up to the total institutional COA.</p>
+                                <h4 class="font-bold text-gray-900" id="plusTitle">Direct Parent PLUS Loan</h4>
+                                <p class="text-xs text-gray-500">Subject to new federal constraints ($20,000 statutory annual limit).</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-bold text-lg text-ucdPrimary block" id="aidPlusUSD">$0</span>
-                                <span class="text-xs font-semibold text-ucdSecondary block" id="aidPlusEUR">€0</span>
+                                <span class="font-bold text-lg text-gray-900 block" id="aidPlusUSD">$0</span>
+                                <span class="text-xs font-semibold text-slate-500 block" id="aidPlusEUR">€0</span>
+                            </div>
+                        </div>
+
+                        <!-- Programmatic Uncovered Balance Line (Fires when OBBBA caps trigger a deficit) -->
+                        <div id="uncoveredGapRow" class="hidden bg-red-50 border border-red-200 p-4 rounded-lg flex justify-between items-center animate-pulse">
+                            <div>
+                                <h4 class="font-bold text-red-900">Remaining Uncovered Funding Gap</h4>
+                                <p class="text-xs text-red-700 font-medium">Requires private international student loans, personal savings, or external scholarships.</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-black text-xl text-red-700 block" id="gapUSD">$0</span>
+                                <span class="text-xs font-bold text-red-900 block" id="gapEUR">€0</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Compliance Footnote & Disclaimers -->
                 <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-xs text-gray-500 leading-relaxed space-y-2">
-                    <p><strong>Disclaimer Notice:</strong> This calculator offers financial estimates for general reference only. Official Cost of Attendance parameters are certified explicitly in Euros (€) inside the secure UCD student portal (SISweb) during processing. US Federal Student Aid limits are strictly determined by the US Department of Education guidelines.</p>
-                    <p>Actual dollar disbursements fluctuate over the calendar year based on ongoing market currency conversion adjustments. Pell Grants and other standard US federal grants are ineligible at international non-US institutions.</p>
+                    <p><strong>Prototype Compliance Notice:</strong> This planner processes framework calculations using standard undergraduate tiers and updated graduate limits established under the One Big Beautiful Bill Act (OBBBA), effective July 1, 2026. Under these updated guidelines, the Graduate PLUS Loan module is completely sunset for new entrants, and Parent PLUS choices are explicitly capped at $20,000 per academic year.</p>
                 </div>
             </div>
         </section>
@@ -199,7 +227,6 @@
     <script src="calculator-db.js"></script>
 
     <script>
-        // GATEWAY SYSTEM: Halts parsing sequence immediately if authorization criteria fails
         (function() {
             const ACCESS_PASSWORD = "Belfield1854"; 
             let authenticated = false;
@@ -231,7 +258,6 @@
             }
         })();
 
-        // Primary Interface Routine
         function handleLevelChange() {
             if (typeof UCD_FINANCIAL_DATABASE === 'undefined') {
                 console.error("Critical Error: 'calculator-db.js' dependencies are unreachable or blocked.");
@@ -267,7 +293,6 @@
             calculateFinancials();
         }
 
-        // Calculation Controller Engine Pipeline Loop
         function calculateFinancials() {
             const level = document.getElementById("academicLevel").value;
             const field = document.getElementById("fieldOfStudy").value;
@@ -291,84 +316,91 @@
                 dashboard.classList.remove("hidden");
             }
 
-            // --- 1. CORE TUITION DATA EXTRESION ---
+            // --- 1. EXPENSE ANALYSIS CALCULATION ---
             const tuitionEUR = UCD_FINANCIAL_DATABASE.tuitionRatesEUR[level][field];
             const colMonths = UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.durationMonths[level];
 
             document.getElementById("itemTuitionUSD").innerText = formatUSD(tuitionEUR * fxRate);
             document.getElementById("itemTuitionEUR").innerText = formatEUR(tuitionEUR);
 
-            // --- 2. DYNAMICALLY DELINEATE LIVING COSTS INTO SEPARATE CONTAINER REGIONS ---
             const monthlyContainer = document.getElementById("monthlyCostsContainer");
             const annualFixedContainer = document.getElementById("annualFixedContainer");
             
-            // Purge existing elements
             monthlyContainer.innerHTML = "";
             annualFixedContainer.innerHTML = "";
 
             let totalLivingEUR = 0;
 
-            // Render Delineated Monthly Component Nodes
             for (const [itemName, monthlyValue] of Object.entries(UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.breakdown)) {
                 const calculatedAnnualItemEUR = monthlyValue * colMonths;
                 totalLivingEUR += calculatedAnnualItemEUR;
-                
-                appendDelineatedRow(
-                    monthlyContainer, 
-                    itemName, 
-                    `${formatEUR(monthlyValue)}/mo baseline rate`, 
-                    calculatedAnnualItemEUR, 
-                    calculatedAnnualItemEUR * fxRate
-                );
+                appendDelineatedRow(monthlyContainer, itemName, `${formatEUR(monthlyValue)}/mo over ${colMonths} months`, calculatedAnnualItemEUR, calculatedAnnualItemEUR * fxRate);
             }
 
-            // Render Delineated Annual Fixed / One-Time Nodes
             for (const [itemName, annualValue] of Object.entries(UCD_FINANCIAL_DATABASE.costOfLivingMonthlyEUR.annualFixedExpenses)) {
                 totalLivingEUR += annualValue;
-                
-                appendDelineatedRow(
-                    annualFixedContainer, 
-                    itemName, 
-                    "One-time flat academic year fee", 
-                    annualValue, 
-                    annualValue * fxRate
-                );
+                appendDelineatedRow(annualFixedContainer, itemName, "Fixed yearly metric assignment", annualValue, annualValue * fxRate);
             }
 
             const totalCOA_EUR = tuitionEUR + totalLivingEUR;
             const totalCOA_USD = totalCOA_EUR * fxRate;
 
-            // --- 3. EXECUTE LOAN LIMIT MATCHING STRATEGY (USD STANDARD CAPS) ---
-            let maxSub_USD = 0;
-            let maxUnsub_USD = 0;
+            // --- 2. EXECUTE NEW OBBBA COMPLIANT FEDERAL LOAN ROUTING ENGINE ---
+            let allowedSub_USD = 0;
+            let allowedUnsub_USD = 0;
+            let allowedPlus_USD = 0;
+
+            const plusLoanRow = document.getElementById("plusLoanRow");
+            const uncoveredGapRow = document.getElementById("uncoveredGapRow");
 
             if (level === "graduate") {
-                maxSub_USD = 0;
-                maxUnsub_USD = 20500;
-                document.getElementById("plusTitle").innerText = "Direct Graduate PLUS Loan";
-            } else {
+                // OBBBA Rules: Grad PLUS is eliminated entirely. 
+                plusLoanRow.classList.add("hidden"); 
+                
+                // Max standard graduate unsubsidized limit applies
+                let maxGradUnsub_USD = UCD_FINANCIAL_DATABASE.federalLoanCapsUSD.gradUnsubsidizedAnnualMax;
+                allowedUnsub_USD = Math.min(maxGradUnsub_USD, totalCOA_USD);
+            } 
+            else {
+                // Undergraduate path rules remain static for base direct loans
+                plusLoanRow.classList.remove("hidden");
                 document.getElementById("plusTitle").innerText = "Direct Parent PLUS Loan";
+
                 if (dependency === "dependent") {
-                    if (year === 1) { maxSub_USD = 3500; maxUnsub_USD = 2000; }
-                    else if (year === 2) { maxSub_USD = 4500; maxUnsub_USD = 2000; }
-                    else { maxSub_USD = 5500; maxUnsub_USD = 2000; }
+                    if (year === 1) { allowedSub_USD = 3500; allowedUnsub_USD = 2000; }
+                    else if (year === 2) { allowedSub_USD = 4500; allowedUnsub_USD = 2000; }
+                    else { allowedSub_USD = 5500; allowedUnsub_USD = 2000; }
                 } else {
-                    if (year === 1) { maxSub_USD = 3500; maxUnsub_USD = 6000; }
-                    else if (year === 2) { maxSub_USD = 4500; maxUnsub_USD = 6000; }
-                    else { maxSub_USD = 5500; maxUnsub_USD = 7000; }
+                    if (year === 1) { allowedSub_USD = 3500; allowedUnsub_USD = 6000; }
+                    else if (year === 2) { allowedSub_USD = 4500; allowedUnsub_USD = 6000; }
+                    else { allowedSub_USD = 5500; allowedUnsub_USD = 7000; }
                 }
+
+                // Balance out remaining baseline expenditure tracks
+                allowedSub_USD = Math.min(allowedSub_USD, totalCOA_USD);
+                let currentRemainingUSD = totalCOA_USD - allowedSub_USD;
+
+                allowedUnsub_USD = Math.min(allowedUnsub_USD, currentRemainingUSD);
+                currentRemainingUSD -= allowedUnsub_USD;
+
+                // OBBBA Rules: Parent PLUS capped strictly at $20,000 max
+                let maxParentPlusLimit_USD = UCD_FINANCIAL_DATABASE.federalLoanCapsUSD.parentPlusAnnualMax;
+                allowedPlus_USD = Math.min(maxParentPlusLimit_USD, currentRemainingUSD);
             }
 
-            let allowedSub_USD = Math.min(maxSub_USD, totalCOA_USD);
-            let remainingCOA_USD = totalCOA_USD - allowedSub_USD;
-
-            let allowedUnsub_USD = Math.min(maxUnsub_USD, remainingCOA_USD);
-            remainingCOA_USD -= allowedUnsub_USD;
-
-            let allowedPlus_USD = Math.max(0, remainingCOA_USD);
             let totalAidPackage_USD = allowedSub_USD + allowedUnsub_USD + allowedPlus_USD;
+            let netFundingGapUSD = Math.max(0, totalCOA_USD - totalAidPackage_USD);
 
-            // --- 4. RENDER AGGREGATE SUMMARY FIELDS ---
+            // Trigger Uncovered Gap banner display if a deficit is generated
+            if (netFundingGapUSD > 0) {
+                uncoveredGapRow.classList.remove("hidden");
+                document.getElementById("gapUSD").innerText = formatUSD(netFundingGapUSD);
+                document.getElementById("gapEUR").innerText = formatEUR(netFundingGapUSD / fxRate);
+            } else {
+                uncoveredGapRow.classList.add("hidden");
+            }
+
+            // --- 3. DISPLAY PRESENTATION INTERACTION DATA ---
             document.getElementById("totalCostUSD").innerText = formatUSD(totalCOA_USD);
             document.getElementById("totalCostEUR").innerText = formatEUR(totalCOA_EUR);
             document.getElementById("totalAidUSD").innerText = formatUSD(totalAidPackage_USD);
@@ -385,10 +417,9 @@
             document.getElementById("aidPlusEUR").innerText = formatEUR(allowedPlus_USD / fxRate);
         }
 
-        // Programmatic Delineated Row Injection Helper
         function appendDelineatedRow(targetParentContainer, title, subtitle, valueEUR, valueUSD) {
             const div = document.createElement("div");
-            div.className = "flex justify-between py-2.5 items-center";
+            div.className = "flex justify-between py-2.5 items-center border-b border-gray-50 last:border-0";
             div.innerHTML = `
                 <div>
                     <span class="font-medium text-gray-700 block text-sm">${title}</span>
@@ -402,13 +433,8 @@
             targetParentContainer.appendChild(div);
         }
 
-        // Formatting Helpers
-        function formatUSD(amount) {
-            return "$" + Math.round(amount).toLocaleString();
-        }
-        function formatEUR(amount) {
-            return "€" + Math.round(amount).toLocaleString();
-        }
+        function formatUSD(amount) { return "$" + Math.round(amount).toLocaleString(); }
+        function formatEUR(amount) { return "€" + Math.round(amount).toLocaleString(); }
 
         window.onload = function() {
             if (sessionStorage.getItem("calculator_auth") === "true") {
